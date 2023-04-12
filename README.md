@@ -1,2 +1,3 @@
-# dhlab-app-corpus
-DHLAB korpus app on cloud run 
+# Corpus
+
+Corpus app for DHlab
