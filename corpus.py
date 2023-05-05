@@ -65,7 +65,7 @@ col1, col2, col3 = st.columns([1,1,3])
 with col1:
     doctype = st.selectbox(
         "Type dokument", 
-        ["digibok", "digavis", "digitidsskrift", "digimanus", "digistorting"], 
+        ["digibok", "digavis", "digitidsskrift", "digimanus", "digistorting", "kudos"], 
         help="Dokumenttypene følger Nasjonalbibliotekets digitale typer")
 
 with col2:
