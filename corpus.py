@@ -16,8 +16,7 @@ def to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Sheet1")
-
-    worksheet = writer.sheets["Sheet1"]
+    #worksheet = writer.sheets["Sheet1"]
     # writer.save()
     processed_data = output.getvalue()
     return processed_data
@@ -37,8 +36,6 @@ def header():
     with col_zero:
         st.subheader("Definer et korpus med innholdsdata og metadata")
     with col_three:
-        #image = Image.open("DHlab_logo_web_en_black.png")
-        #st.image(image)
         st.markdown(
                 """<style>img {opacity: 0.6;}</style><a href="https://nb.no/dhlab"><img src="https://github.com/NationalLibraryOfNorway/DHLAB-apps/raw/main/corpus/DHlab_logo_web_en_black.png" style="width:250px"></a>""",
                 unsafe_allow_html=True,
@@ -93,8 +90,6 @@ def input_fields():
             year = today.year
             params["years"] = st.slider("Årsspenn", 1810, year, (1950, year))
 
-        return params
-
     def row2(params):
         # st.subheader("Forfatter og tittel") ###################################################
         cola, colb = st.columns(2)
@@ -115,8 +110,6 @@ def input_fields():
                 disabled=(params["doctype"] in ["digistorting"]),
             )
 
-        return params
-
     def row3(params):
         # st.subheader("Meta- og innholdsdata") ##########################################################
 
@@ -136,10 +129,6 @@ def input_fields():
                 help="Input matcher et deweynummer. For å matche hele serien føy til en `*`. Bruk OR for å kombinere: 364* OR 916*",
                 disabled=(params["doctype"] in ["digistorting"]),
             )
-            # if ddk != "" and not ddk.endswith("!"):
-            #     ddk = f"{ddk}*"
-            # if ddk.endswith("!"):
-            #     ddk = ddk[:-1]
 
         with colf:
             params["subject"] = st.text_input(
@@ -149,18 +138,12 @@ def input_fields():
                 " og AND for begrense. Trunkert søk går også — for eksempel vil barne* matche barnebok og barnebøker",
                 disabled=(params["doctype"] in ["digistorting"]),
             )
-        return params
 
     params = {}
 
-    p1 = row1(params)
-    params.update(p1)
-
-    p2 = row2(params)
-    params.update(p2)
-
-    p3 = row3(params)
-    params.update(p3)
+    row1(params)
+    row2(params)
+    row3(params)
 
     return params
 
@@ -180,6 +163,7 @@ def corpus_management(params):
                 max_value=max_size_corpus,
                 value=int(default_size * max_size_corpus / 100),
             )
+            #    limit = st.number_input(300)
         with col_order:
             ordertype = st.selectbox(
                 "Metode for uthenting",
@@ -192,101 +176,113 @@ def corpus_management(params):
         submit_button = st.form_submit_button(
             label="Trykk her når korpusdefinisjonen er klar"
         )
-
+        limit
         if submit_button:
-            if params["doctype"] in ["digimanus"]:
-                df = dh.Corpus(
-                    doctype=v(params["doctype"]), limit=limit, order_by=ordertype
-                )
-                columns = ["urn", "title"]
-            elif params["doctype"] in ["digavis"]:
-                df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    title=v(params["title"]),
-                    limit=limit,
-                    order_by=ordertype,
-                )
-                columns = ["urn", "title", "year", "timestamp", "city"]
-            elif params["doctype"] in ["digitidsskrift"]:
-                df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    author=v(params["author"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    title=v(params["title"]),
-                    subject=v(params["subject"]),
-                    ddk=v(params["ddk"]),
-                    lang=params["language"],
-                    limit=limit,
-                    order_by=ordertype,
-                )
-                columns = [
-                    "dhlabid",
-                    "urn",
-                    "title",
-                    "city",
-                    "timestamp",
-                    "year",
-                    "publisher",
-                    "ddc",
-                    "langs",
-                ]
-            elif params["doctype"] in ["digistorting"]:
-                df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    limit=limit,
-                    order_by=ordertype,
-                )
-                columns = ["dhlabid", "urn", "year"]
-            else:
-                df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    author=v(params["author"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    title=v(params["title"]),
-                    subject=v(params["subject"]),
-                    ddk=v(params["ddk"]),
-                    lang=params["language"],
-                    limit=limit,
-                    order_by=ordertype,
-                )
-                columns = [
-                    "dhlabid",
-                    "urn",
-                    "authors",
-                    "title",
-                    "city",
-                    "timestamp",
-                    "year",
-                    "publisher",
-                    "ddc",
-                    "subjects",
-                    "langs",
-                ]
+            match params["doctype"]:
 
-            st.markdown(f"Fant totalt {df.size} dokumenter")
+                case "digimanus":
+                    df = dh.Corpus(
+                    doctype=v(params["doctype"]), limit=limit, order_by=ordertype
+                    )
+                    columns = ["urn", "title"]
+            
+                case "digavis":
+                    df = dh.Corpus(
+                        doctype=v(params["doctype"]),
+                        fulltext=v(params["fulltext"]),
+                        from_year=params["years"][0],
+                        to_year=params["years"][1],
+                        title=v(params["title"]),
+                        limit=limit,
+                        order_by=ordertype,
+                    )
+                    columns = ["urn", "title", "year", "timestamp", "city"]
+
+                case "digitidsskrift":
+                    df = dh.Corpus(
+                    doctype=v(params["doctype"]),
+                    author=v(params["author"]),
+                    fulltext=v(params["fulltext"]),
+                    from_year=params["years"][0],
+                    to_year=params["years"][1],
+                    title=v(params["title"]),
+                    subject=v(params["subject"]),
+                    ddk=v(params["ddk"]),
+                    lang=params["language"],
+                    limit=limit,
+                    order_by=ordertype,
+                    )
+                    columns = [
+                        "dhlabid",
+                        "urn",
+                        "title",
+                        "city",
+                        "timestamp",
+                        "year",
+                        "publisher",
+                        "ddc",
+                        "langs",
+                    ]
+
+                case "digistorting":
+                    df = dh.Corpus(
+                    doctype=v(params["doctype"]),
+                    fulltext=v(params["fulltext"]),
+                    from_year=params["years"][0],
+                    to_year=params["years"][1],
+                    limit=limit,
+                    order_by=ordertype,
+                    )
+                    columns = ["dhlabid", "urn", "year"]
+                
+                case _:
+                    df = dh.Corpus(
+                    doctype=v(params["doctype"]),
+                    author=v(params["author"]),
+                    fulltext=v(params["fulltext"]),
+                    from_year=params["years"][0],
+                    to_year=params["years"][1],
+                    title=v(params["title"]),
+                    subject=v(params["subject"]),
+                    ddk=v(params["ddk"]),
+                    lang=params["language"],
+                    limit=limit,
+                    order_by=ordertype,
+                    ).frame
+                    columns = [
+                        "dhlabid",
+                        "urn",
+                        "authors",
+                        "title",
+                        "city",
+                        "timestamp",
+                        "year",
+                        "publisher",
+                        "ddc",
+                        "subjects",
+                        "langs",
+                    ]
+
+
+            st.markdown(f"Fant totalt {len(df)} dokumenter")
+
+
 
             if df.size >= max_rows:
                 st.markdown(f"Viser {min_rows} rader.")
-                st.dataframe(df.corpus.sample(min(min_rows, max_rows)))
-            else:
-                st.dataframe(df.corpus[columns])
+                st.dataframe(df.sample(min(min_rows, max_rows)).astype(str))
 
+            
+
+            else:
+               st.dataframe(df[columns].astype(str))
+                
             df_defined = True
 
     if df_defined:
         if st.download_button(
             "Last ned data i excelformat",
-            to_excel(df.corpus),
+            to_excel(df),
             filnavn,
             help="Åpnes i Excel eller tilsvarende",
         ):
