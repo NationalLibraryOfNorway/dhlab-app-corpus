@@ -16,7 +16,7 @@ def to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Sheet1")
-    #worksheet = writer.sheets["Sheet1"]
+    # worksheet = writer.sheets["Sheet1"]
     # writer.save()
     processed_data = output.getvalue()
     return processed_data
@@ -37,9 +37,25 @@ def header():
         st.subheader("Definer et korpus med innholdsdata og metadata")
     with col_three:
         st.markdown(
-                """<style>img {opacity: 0.6;}</style><a href="https://nb.no/dhlab"><img src="https://github.com/NationalLibraryOfNorway/DHLAB-apps/raw/main/corpus/DHlab_logo_web_en_black.png" style="width:250px"></a>""",
-                unsafe_allow_html=True,
-            )
+            """<style>img {opacity: 0.6;}</style><a href="https://nb.no/dhlab"><img src="https://github.com/NationalLibraryOfNorway/DHLAB-apps/raw/main/corpus/DHlab_logo_web_en_black.png" style="width:250px"></a>""",
+            unsafe_allow_html=True,
+        )
+    with st.expander("ℹ️ Appinfo"):
+        # st.write("some text")
+        st.markdown(
+            """Med denne appen kan man lage et DHLAB-korpus av tekster fra Nasjonalbibliotekets samling. Et DHLAB-korpus gjør at man kan gjøre kvantitative analyser av tekstsamlinger som inkluderer opphavsrettsbeskyttet materiale. I stedet for å laste ned tekstene, får man en kode for hver tekst. Denne kan så lastes opp i andre DHLAB-apper for å gjøre analyser på den teksten. 
+
+DHLAB tilbyr følgende ressurstyper:  
+**Digibok** – bøker fra Nasjonalbiblioteket  
+**Digavis** – aviser fra Nasjonalbiblioteket  
+**Digitidsskrift** – Tidsskrift fra Nasjonalbiblioteket  
+**Digistorting** – Stortingsdokumenter i NBs samling  
+**Digimanus** – Brev og manuskripter  
+**Kudos** – [Kunnskapsdokumenter i offentlig sektor](https://kudos.dfo.no/)  
+
+Man kan gjøre et utvalg fra metadata som er tilgjengelig for hver ressurstype. Ved å laste det ned kan man bruke det samme korpuset i andre apper fra DHLAB.
+"""
+        )
 
 
 def input_fields():
@@ -176,16 +192,15 @@ def corpus_management(params):
         submit_button = st.form_submit_button(
             label="Trykk her når korpusdefinisjonen er klar"
         )
-        limit
+
         if submit_button:
             match params["doctype"]:
-
                 case "digimanus":
                     df = dh.Corpus(
-                    doctype=v(params["doctype"]), limit=limit, order_by=ordertype
-                    )
+                        doctype=v(params["doctype"]), limit=limit, order_by=ordertype
+                    ).frame
                     columns = ["urn", "title"]
-            
+
                 case "digavis":
                     df = dh.Corpus(
                         doctype=v(params["doctype"]),
@@ -195,23 +210,23 @@ def corpus_management(params):
                         title=v(params["title"]),
                         limit=limit,
                         order_by=ordertype,
-                    )
+                    ).frame
                     columns = ["urn", "title", "year", "timestamp", "city"]
 
                 case "digitidsskrift":
                     df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    author=v(params["author"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    title=v(params["title"]),
-                    subject=v(params["subject"]),
-                    ddk=v(params["ddk"]),
-                    lang=params["language"],
-                    limit=limit,
-                    order_by=ordertype,
-                    )
+                        doctype=v(params["doctype"]),
+                        author=v(params["author"]),
+                        fulltext=v(params["fulltext"]),
+                        from_year=params["years"][0],
+                        to_year=params["years"][1],
+                        title=v(params["title"]),
+                        subject=v(params["subject"]),
+                        ddk=v(params["ddk"]),
+                        lang=params["language"],
+                        limit=limit,
+                        order_by=ordertype,
+                    ).frame
                     columns = [
                         "dhlabid",
                         "urn",
@@ -226,28 +241,28 @@ def corpus_management(params):
 
                 case "digistorting":
                     df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    limit=limit,
-                    order_by=ordertype,
-                    )
+                        doctype=v(params["doctype"]),
+                        fulltext=v(params["fulltext"]),
+                        from_year=params["years"][0],
+                        to_year=params["years"][1],
+                        limit=limit,
+                        order_by=ordertype,
+                    ).frame
                     columns = ["dhlabid", "urn", "year"]
-                
+
                 case _:
                     df = dh.Corpus(
-                    doctype=v(params["doctype"]),
-                    author=v(params["author"]),
-                    fulltext=v(params["fulltext"]),
-                    from_year=params["years"][0],
-                    to_year=params["years"][1],
-                    title=v(params["title"]),
-                    subject=v(params["subject"]),
-                    ddk=v(params["ddk"]),
-                    lang=params["language"],
-                    limit=limit,
-                    order_by=ordertype,
+                        doctype=v(params["doctype"]),
+                        author=v(params["author"]),
+                        fulltext=v(params["fulltext"]),
+                        from_year=params["years"][0],
+                        to_year=params["years"][1],
+                        title=v(params["title"]),
+                        subject=v(params["subject"]),
+                        ddk=v(params["ddk"]),
+                        lang=params["language"],
+                        limit=limit,
+                        order_by=ordertype,
                     ).frame
                     columns = [
                         "dhlabid",
@@ -263,20 +278,15 @@ def corpus_management(params):
                         "langs",
                     ]
 
-
             st.markdown(f"Fant totalt {len(df)} dokumenter")
 
-
-
-            if df.size >= max_rows:
+            if len(df) >= max_rows:
                 st.markdown(f"Viser {min_rows} rader.")
-                st.dataframe(df.sample(min(min_rows, max_rows)).astype(str))
-
-            
+                st.dataframe(df[columns].sample(min(min_rows, max_rows)).astype(str))
 
             else:
-               st.dataframe(df[columns].astype(str))
-                
+                st.dataframe(df[columns].astype(str))
+
             df_defined = True
 
     if df_defined:
@@ -299,12 +309,10 @@ def main():
         menu_items=None,
     )
 
-  
-
     header()
 
     st.write("---")
-    
+
     params = input_fields()
 
     corpus_management(params)
