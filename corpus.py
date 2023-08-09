@@ -197,9 +197,16 @@ def corpus_management(params):
             match params["doctype"]:
                 case "digimanus":
                     df = dh.Corpus(
-                        doctype=v(params["doctype"]), limit=limit, order_by=ordertype
+                        doctype=v(params["doctype"]),
+                        author=v(params["author"]),
+                        fulltext=v(params["fulltext"]),
+                        from_year=params["years"][0],
+                        to_year=params["years"][1],
+                        title=v(params["title"]),
+                        limit=limit,
+                        order_by=ordertype,
                     ).frame
-                    columns = ["urn", "title"]
+                    columns = ["dhlabid", "urn", "authors", "title", "timestamp", "year"]
 
                 case "digavis":
                     df = dh.Corpus(
