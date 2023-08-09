@@ -46,14 +46,14 @@ def header():
             """Med denne appen kan man lage et DHLAB-korpus av tekster fra Nasjonalbibliotekets samling. Et DHLAB-korpus gjør at man kan gjøre kvantitative analyser av tekstsamlinger som inkluderer opphavsrettsbeskyttet materiale. I stedet for å laste ned tekstene, får man en kode for hver tekst. Denne kan så lastes opp i andre DHLAB-apper for å gjøre analyser på den teksten. 
 
 DHLAB tilbyr følgende ressurstyper:  
-**Digibok** – bøker fra Nasjonalbiblioteket  
-**Digavis** – aviser fra Nasjonalbiblioteket  
-**Digitidsskrift** – Tidsskrift fra Nasjonalbiblioteket  
-**Digistorting** – Stortingsdokumenter i NBs samling  
-**Digimanus** – Brev og manuskripter  
-**Kudos** – [Kunnskapsdokumenter i offentlig sektor](https://kudos.dfo.no/)  
+**Digibok**: Bøker fra Nasjonalbiblioteket  
+**Digavis**: Aviser fra Nasjonalbiblioteket  
+**Digitidsskrift**: Tidsskrift fra Nasjonalbiblioteket  
+**Digistorting**: Stortingsdokumenter i NBs samling  
+**Digimanus**: Brev og manuskripter  
+**Kudos**: [Kunnskapsdokumenter i offentlig sektor](https://kudos.dfo.no/)  
 
-Man kan gjøre et utvalg fra metadata som er tilgjengelig for hver ressurstype. Ved å laste det ned kan man bruke det samme korpuset i andre apper fra DHLAB.
+Man kan gjøre et utvalg fra metadata som er tilgjengelig for hver ressurstype. Ved å laste det ned, kan man bruke det samme korpuset i andre apper fra DHLAB.
 """
         )
 
