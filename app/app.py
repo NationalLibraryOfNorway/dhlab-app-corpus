@@ -167,7 +167,7 @@ def input_fields():
 def corpus_management(params):
     df_defined = False
     st.subheader(
-        "Lag korpuset og last ned"
+        "Lag korpuset og last ned metadata"
     )  ######################################################################
 
     with st.form(key="my_form"):
