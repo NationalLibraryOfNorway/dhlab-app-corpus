@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "dhlab-app-corpus"
+version = "1.0.1"
+description = "Dh-lab corpus streamlit app"
+authors = ["DH-lab <dhlab@nb.no>"]
+license = "mit"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^2.1.4"
+openpyxl = "^3.1.2"
+streamlit = "^1.29.0"
+dhlab = "^2.30.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
