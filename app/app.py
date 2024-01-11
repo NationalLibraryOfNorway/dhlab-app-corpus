@@ -11,6 +11,8 @@ min_rows = 800
 default_size = 10  # percent of max_size_corpus
 
 
+
+
 def to_excel(df):
     """Make an excel object out of a dataframe as an IO-object"""
     output = BytesIO()
@@ -35,6 +37,22 @@ def header():
     col_zero, col_two, col_three = st.columns([4, 1, 1])
     with col_zero:
         st.subheader("Definer et korpus med innholdsdata og metadata")
+        link = "https://github.com/nationallibraryofnorway/dhlab-app-corpus"
+        col_zero.markdown(    
+    f""" 
+    <div style="display: flex; align-items: center; gap: 5px; margin-top: -20px;">
+    <a href="{link}" target="_blank">
+        <i class="fab fa-github fa-1x" style="color: #262730;"></i>
+    </a>
+    <a href="https://www.nb.no/dh-lab/kontakt/" target="_blank">
+        <i style='font-size:15px; color: #262730;' class='fas'>&#xf0e0;</i>
+    </a>
+    
+</div>
+""",
+            unsafe_allow_html=True,
+        )
+    
     with col_three:
         st.markdown(
             """<style>img {opacity: 0.6;}</style><a href="https://nb.no/dhlab"><img src="https://github.com/NationalLibraryOfNorway/DHLAB-apps/raw/main/corpus/DHlab_logo_web_en_black.png" style="width:250px"></a>""",
@@ -206,7 +224,7 @@ def corpus_management(params):
                         limit=limit,
                         order_by=ordertype,
                     ).frame
-                    columns = ["dhlabid", "urn", "authors", "title", "timestamp", "year"]
+                    columns = ["dhlabid", "urn", "author", "title", "timestamp", "year"]
 
                 case "digavis":
                     df = dh.Corpus(
@@ -243,7 +261,7 @@ def corpus_management(params):
                         "year",
                         "publisher",
                         "ddc",
-                        "langs",
+                        "language",
                     ]
 
                 case "digistorting":
@@ -274,7 +292,7 @@ def corpus_management(params):
                     columns = [
                         "dhlabid",
                         "urn",
-                        "authors",
+                        "author",
                         "title",
                         "city",
                         "timestamp",
@@ -282,7 +300,7 @@ def corpus_management(params):
                         "publisher",
                         "ddc",
                         "subjects",
-                        "langs",
+                        "language",
                     ]
 
             st.markdown(f"Fant totalt {len(df)} dokumenter")
@@ -315,7 +333,11 @@ def main():
         initial_sidebar_state="auto",
         menu_items=None,
     )
-
+    st.markdown(
+        '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">',
+        unsafe_allow_html=True,
+    )
+    
     header()
 
     st.write("---")
