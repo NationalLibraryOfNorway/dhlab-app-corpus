@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dhlab-app-corpus"
-version = "1.0.1"
+version = "1.0.2"
 description = "Dh-lab corpus streamlit app"
 authors = ["DH-lab <dhlab@nb.no>"]
 license = "gpl3"
@@ -13,6 +13,9 @@ openpyxl = "^3.1.2"
 streamlit = "^1.29.0"
 dhlab = "^2.30.4"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
 
 [build-system]
 requires = ["poetry-core"]
