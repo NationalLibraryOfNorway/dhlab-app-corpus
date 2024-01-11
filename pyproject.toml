@@ -3,7 +3,7 @@ name = "dhlab-app-corpus"
 version = "1.0.1"
 description = "Dh-lab corpus streamlit app"
 authors = ["DH-lab <dhlab@nb.no>"]
-license = "mit"
+license = "gpl3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
