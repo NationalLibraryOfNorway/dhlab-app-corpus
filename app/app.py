@@ -11,8 +11,6 @@ min_rows = 800
 default_size = 10  # percent of max_size_corpus
 
 
-
-
 def to_excel(df):
     """Make an excel object out of a dataframe as an IO-object"""
     output = BytesIO()
@@ -38,8 +36,8 @@ def header():
     with col_zero:
         st.subheader("Definer et korpus med innholdsdata og metadata")
         link = "https://github.com/nationallibraryofnorway/dhlab-app-corpus"
-        col_zero.markdown(    
-    f""" 
+        col_zero.markdown(
+            f""" 
     <div style="display: flex; align-items: center; gap: 5px; margin-top: -20px;">
     <a href="{link}" target="_blank">
         <i class="fab fa-github fa-1x" style="color: #262730;"></i>
@@ -52,7 +50,7 @@ def header():
 """,
             unsafe_allow_html=True,
         )
-    
+
     with col_three:
         st.markdown(
             """<style>img {opacity: 0.6;}</style><a href="https://nb.no/dhlab"><img src="https://github.com/NationalLibraryOfNorway/DHLAB-apps/raw/main/corpus/DHlab_logo_web_en_black.png" style="width:250px"></a>""",
@@ -337,7 +335,7 @@ def main():
         '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">',
         unsafe_allow_html=True,
     )
-    
+
     header()
 
     st.write("---")
