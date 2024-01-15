@@ -11,11 +11,15 @@ python = "^3.10"
 pandas = "^2.1.4"
 openpyxl = "^3.1.2"
 streamlit = "^1.29.0"
-dhlab = "^2.30.4"
+dhlab = "^2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.4"
 
 [build-system]
 requires = ["poetry-core"]
