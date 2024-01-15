@@ -112,10 +112,10 @@ def input_fields():
                 help="Velg fra listen",
                 disabled=(params["doctype"] in ["digistorting"]),
             )
-            params["language"] = " AND ".join(list(lang))
+            params["langs"] = " AND ".join(list(lang))
 
-            if params["language"] == "":
-                params["language"] = None
+            if params["langs"] == "":
+                params["langs"] = None
 
         with col3:
             today = datetime.date.today()
@@ -127,7 +127,7 @@ def input_fields():
         cola, colb = st.columns(2)
 
         with cola:
-            params["author"] = st.text_input(
+            params["authors"] = st.text_input(
                 "Forfatter",
                 "",
                 help="Feltet blir kun tatt hensyn til for digibok",
@@ -214,7 +214,7 @@ def corpus_management(params):
                 case "digimanus":
                     df = dh.Corpus(
                         doctype=v(params["doctype"]),
-                        author=v(params["author"]),
+                        author=v(params["authors"]),
                         fulltext=v(params["fulltext"]),
                         from_year=params["years"][0],
                         to_year=params["years"][1],
@@ -222,7 +222,7 @@ def corpus_management(params):
                         limit=limit,
                         order_by=ordertype,
                     ).frame
-                    columns = ["dhlabid", "urn", "author", "title", "timestamp", "year"]
+                    columns = ["dhlabid", "urn", "authors", "title", "timestamp", "year"]
 
                 case "digavis":
                     df = dh.Corpus(
@@ -239,14 +239,14 @@ def corpus_management(params):
                 case "digitidsskrift":
                     df = dh.Corpus(
                         doctype=v(params["doctype"]),
-                        author=v(params["author"]),
+                        author=v(params["authors"]),
                         fulltext=v(params["fulltext"]),
                         from_year=params["years"][0],
                         to_year=params["years"][1],
                         title=v(params["title"]),
                         subject=v(params["subject"]),
                         ddk=v(params["ddk"]),
-                        lang=params["language"],
+                        lang=params["langs"],
                         limit=limit,
                         order_by=ordertype,
                     ).frame
@@ -259,7 +259,7 @@ def corpus_management(params):
                         "year",
                         "publisher",
                         "ddc",
-                        "language",
+                        "langs",
                     ]
 
                 case "digistorting":
@@ -276,21 +276,21 @@ def corpus_management(params):
                 case _:
                     df = dh.Corpus(
                         doctype=v(params["doctype"]),
-                        author=v(params["author"]),
+                        author=v(params["authors"]),
                         fulltext=v(params["fulltext"]),
                         from_year=params["years"][0],
                         to_year=params["years"][1],
                         title=v(params["title"]),
                         subject=v(params["subject"]),
                         ddk=v(params["ddk"]),
-                        lang=params["language"],
+                        lang=params["langs"],
                         limit=limit,
                         order_by=ordertype,
                     ).frame
                     columns = [
                         "dhlabid",
                         "urn",
-                        "author",
+                        "authors",
                         "title",
                         "city",
                         "timestamp",
@@ -298,7 +298,7 @@ def corpus_management(params):
                         "publisher",
                         "ddc",
                         "subjects",
-                        "language",
+                        "langs",
                     ]
 
             st.markdown(f"Fant totalt {len(df)} dokumenter")
