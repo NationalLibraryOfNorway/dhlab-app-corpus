@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dhlab-app-corpus"
-version = "1.0.2"
+version = "1.1.0"
 description = "Dh-lab corpus streamlit app"
 authors = ["DH-lab <dhlab@nb.no>"]
 license = "gpl3"
