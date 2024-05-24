@@ -30,6 +30,15 @@ def v(x):
         res = None
     return res
 
+@st.cache_data
+def get_languages():
+    lookup = pd.read_csv("language_codes.csv", sep=";").set_index('code')['language'].to_dict()
+    return lookup
+
+
+def get_languagename(lang):
+    lookup = get_languages()
+    return lookup.get(lang, lang)
 
 def header():
     col_zero, col_two, col_three = st.columns([4, 1, 1])
@@ -37,7 +46,7 @@ def header():
         st.subheader("Definer et korpus med innholdsdata og metadata")
         link = "https://github.com/nationallibraryofnorway/dhlab-app-corpus"
         col_zero.markdown(
-            f""" 
+            f"""
     <div style="display: flex; align-items: center; gap: 5px; margin-top: -20px;">
     <a href="{link}" target="_blank">
         <i class="fab fa-github fa-1x" style="color: #262730;"></i>
@@ -45,7 +54,7 @@ def header():
     <a href="https://www.nb.no/dh-lab/kontakt/" target="_blank">
         <i style='font-size:15px; color: #262730;' class='fas'>&#xf0e0;</i>
     </a>
-    
+
 </div>
 """,
             unsafe_allow_html=True,
@@ -59,15 +68,15 @@ def header():
     with st.expander("ℹ️ Appinfo"):
         # st.write("some text")
         st.markdown(
-            """Med denne appen kan man lage et DHLAB-korpus av tekster fra Nasjonalbibliotekets samling. Et DHLAB-korpus gjør at man kan gjøre kvantitative analyser av tekstsamlinger som inkluderer opphavsrettsbeskyttet materiale. I stedet for å laste ned tekstene, får man en kode for hver tekst. Denne kan så lastes opp i andre DHLAB-apper for å gjøre analyser på den teksten. 
+            """Med denne appen kan man lage et DHLAB-korpus av tekster fra Nasjonalbibliotekets samling. Et DHLAB-korpus gjør at man kan gjøre kvantitative analyser av tekstsamlinger som inkluderer opphavsrettsbeskyttet materiale. I stedet for å laste ned tekstene, får man en kode for hver tekst. Denne kan så lastes opp i andre DHLAB-apper for å gjøre analyser på den teksten.
 
-DHLAB tilbyr følgende ressurstyper:  
-**Digibok**: Bøker fra Nasjonalbiblioteket  
-**Digavis**: Aviser fra Nasjonalbiblioteket  
-**Digitidsskrift**: Tidsskrift fra Nasjonalbiblioteket  
-**Digistorting**: Stortingsdokumenter i NBs samling  
-**Digimanus**: Brev og manuskripter  
-**Kudos**: [Kunnskapsdokumenter i offentlig sektor](https://kudos.dfo.no/)  
+DHLAB tilbyr følgende ressurstyper:
+**Digibok**: Bøker fra Nasjonalbiblioteket
+**Digavis**: Aviser fra Nasjonalbiblioteket
+**Digitidsskrift**: Tidsskrift fra Nasjonalbiblioteket
+**Digistorting**: Stortingsdokumenter i NBs samling
+**Digimanus**: Brev og manuskripter
+**Kudos**: [Kunnskapsdokumenter i offentlig sektor](https://kudos.dfo.no/)
 
 Man kan gjøre et utvalg fra metadata som er tilgjengelig for hver ressurstype. Ved å laste det ned, kan man bruke det samme korpuset i andre apper fra DHLAB.
 """
@@ -93,26 +102,16 @@ def input_fields():
             )
 
         with col2:
+            language_opts = get_languages().keys()
             lang = st.multiselect(
                 "Språk",
-                [
-                    "nob",
-                    "nno",
-                    "dan",
-                    "swe",
-                    "sme",
-                    "smj",
-                    "fkv",
-                    "eng",
-                    "fra",
-                    "spa",
-                    "ger",
-                ],
+                language_opts,
                 # default = "nob",
+                format_func=get_languagename,
                 help="Velg fra listen",
                 disabled=(params["doctype"] in ["digistorting"]),
             )
-            params["langs"] = " AND ".join(list(lang))
+            params["langs"] = " OR ".join(list(lang))
 
             if params["langs"] == "":
                 params["langs"] = None
