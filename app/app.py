@@ -16,8 +16,6 @@ def to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Sheet1")
-    # worksheet = writer.sheets["Sheet1"]
-    # writer.save()
     processed_data = output.getvalue()
     return processed_data
 
@@ -65,7 +63,7 @@ def header():
             """<style>img {opacity: 0.6;}</style><a href="https://nb.no/dhlab"><img src="https://github.com/NationalLibraryOfNorway/DHLAB-apps/raw/main/corpus/DHlab_logo_web_en_black.png" style="width:250px"></a>""",
             unsafe_allow_html=True,
         )
-    with st.expander("ℹ️ Appinfo"):
+    with st.expander("ℹ️ Hjelp"):
         # st.write("some text")
         st.markdown(
             """Med denne appen kan man lage et DHLAB-korpus av tekster fra Nasjonalbibliotekets samling. Et DHLAB-korpus gjør at man kan gjøre kvantitative analyser av tekstsamlinger som inkluderer opphavsrettsbeskyttet materiale. I stedet for å laste ned tekstene, får man en kode for hver tekst. Denne kan så lastes opp i andre DHLAB-apper for å gjøre analyser på den teksten.
