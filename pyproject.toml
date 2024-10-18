@@ -3,23 +3,15 @@ name = "dhlab-app-corpus"
 version = "1.1.1"
 description = "Dh-lab corpus streamlit app"
 authors = ["DH-lab <dhlab@nb.no>"]
-license = "gpl3"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-pandas = "^2.1.4"
-openpyxl = "^3.1.2"
-streamlit = "^1.29.0"
-dhlab = "^2.31.0"
+python = "^3.12"
+pandas = "^2.2.3"
+openpyxl = "^3.1.5"
+streamlit = "^1.38.0"
+dhlab = "^2.38.1"
 
-
-[tool.poetry.group.dev.dependencies]
-black = "^23.12.1"
-
-
-[tool.poetry.group.test.dependencies]
-pytest = "^7.4.4"
 
 [build-system]
 requires = ["poetry-core"]
