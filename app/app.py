@@ -33,7 +33,6 @@ def get_languages():
     lookup = pd.read_csv("language_codes.csv", sep=";").set_index('code')['language'].to_dict()
     return lookup
 
-
 def get_languagename(lang):
     lookup = get_languages()
     return lookup.get(lang, lang)
@@ -75,8 +74,9 @@ DHLAB tilbyr følgende ressurstyper:
 **Digistorting**: Stortingsdokumenter i NBs samling
 **Digimanus**: Brev og manuskripter
 **Kudos**: [Kunnskapsdokumenter i offentlig sektor](https://kudos.dfo.no/)
+**Nettavis**: Tekster fra nettaviser
 
-Man kan gjøre et utvalg fra metadata som er tilgjengelig for hver ressurstype. Ved å laste det ned, kan man bruke det samme korpuset i andre apper fra DHLAB.
+Du kan definere korpuset basert på utvalgte metadata og nøkkelord. Metadata for korpuset kan lastes ned i Excel-format. Denne fila kan lastes opp i andre DHLAB-apper for innsikt og analyse.
 """
         )
 
@@ -95,8 +95,9 @@ def input_fields():
                     "digimanus",
                     "digistorting",
                     "kudos",
+                    "nettavis",
                 ],
-                help="Dokumenttypene følger Nasjonalbibliotekets digitale typer",
+                help="Følger Nasjonalbibliotekets digitale dokumenttyper",
             )
 
         with col2:
@@ -117,7 +118,12 @@ def input_fields():
         with col3:
             today = datetime.date.today()
             year = today.year
-            params["years"] = st.slider("Årsspenn", 1810, year, (1950, year))
+            
+            # Tilpasse slider dersom dokumenttype er "nettavis"
+            if params["doctype"] == "nettavis":
+                params["years"] = st.slider("Årsspenn", 2019, 2022, (2019, 2022))
+            else:
+                params["years"] = st.slider("Årsspenn", 1810, year, (1950, year))
 
     def row2(params):
         # st.subheader("Forfatter og tittel") ###################################################
@@ -128,7 +134,7 @@ def input_fields():
                 "Forfatter",
                 "",
                 help="Feltet blir kun tatt hensyn til for digibok",
-                disabled=(params["doctype"] in ["digavis", "digistorting"]),
+                disabled=(params["doctype"] in ["digavis", "digistorting", "nettavis"]),
             )
 
         with colb:
@@ -147,16 +153,16 @@ def input_fields():
             params["fulltext"] = st.text_input(
                 "Ord eller fraser i teksten",
                 "",
-                help="Matching på innholdsord skiller ikke mellom stor og liten bokstav."
-                " Trunkert søk er mulig, slik at demokrat* vil finne bøker som inneholder demokrati og demokratisk blant andre treff",
+                help="Søketreff er uavhengig av stor og liten bokstav."
+                "Du kan søke trunkert med *. For eksempel vil demokrat* returnere tekster som inneholder demokrati og demokratisk blant andre treff",
             )
 
         with cole:
             params["ddk"] = st.text_input(
                 "Dewey desimaltall",
                 "",
-                help="Input matcher et deweynummer. For å matche hele serien føy til en `*`. Bruk OR for å kombinere: 364* OR 916*",
-                disabled=(params["doctype"] in ["digistorting"]),
+                help="Input matcher et deweynummer. For å matche en hel serie, føy til `*`. Bruk OR for å kombinere: 364* OR 916*",
+                disabled=(params["doctype"] in ["digistorting", "nettavis"]),
             )
 
         with colf:
@@ -165,7 +171,7 @@ def input_fields():
                 "",
                 help="For å matche på flere emner, skill med OR for alternativ"
                 " og AND for begrense. Trunkert søk går også — for eksempel vil barne* matche barnebok og barnebøker",
-                disabled=(params["doctype"] in ["digistorting"]),
+                disabled=(params["doctype"] in ["digistorting", "nettavis"]),
             )
 
     params = {}
@@ -197,7 +203,7 @@ def corpus_management(params):
             ordertype = st.selectbox(
                 "Metode for uthenting",
                 ["first", "rank", "random"],
-                help="Metode 'first' er raskest, og velger dokument etter hvert som de blir funnet, mens'rank' gir en rask ordning på dokumenter om korpuset er definert med et fulltekstsøk og sorterer på relevans, siste valg er 'random' som først samler inn hele korpuset og gjør et vilkårlig utvalg av tekster derfra.",
+                help="Metode 'first' er raskest, og velger dokument etter hvert som de blir funnet. 'rank' gir en rask ordning på dokumenter om korpuset er definert med et fulltekstsøk og sorterer på relevans. 'random' samler først inn hele korpuset og gjør deretter et vilkårlig utvalg av tekster derfra.",
             )
         with coly:
             filnavn = st.text_input("Filnavn for nedlasting", "korpus.xlsx")
@@ -269,6 +275,30 @@ def corpus_management(params):
                         order_by=ordertype,
                     ).frame
                     columns = ["dhlabid", "urn", "year"]
+
+
+                case "nettavis":
+                    df = dh.Corpus(
+                        doctype=v(params["doctype"]),
+                        fulltext=v(params["fulltext"]),
+                        from_year=params["years"][0],
+                        to_year=params["years"][1],
+                        title=v(params["title"]),
+                        limit=limit,
+                        order_by=ordertype,
+                    ).frame
+                    columns = [
+                        "dhlabid",
+                        "title",
+                        "timestamp",
+                        "publisher",
+                        "langs",
+                        "oaiid",
+                        "year",
+                        "city",
+                        "urn"
+                    ]
+
 
                 case _:
                     df = dh.Corpus(
